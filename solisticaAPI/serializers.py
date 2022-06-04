@@ -14,10 +14,15 @@ class NeumSerializer(serializers.HyperlinkedModelSerializer):
 		model = neumatico
 		fields = ('id','epc','idP','pos','trailer')
 
+class ValidSerializer(serializers.HyperlinkedModelSerializer):
+	class Meta:
+		model = validaciones
+		fields = ('id','epc','fecha','antena','coordenadas','equipo')
+
 class HistSerializer(serializers.HyperlinkedModelSerializer):
 	class Meta:
 		model = historial
-		fields = ('id','epc','hora','tipo','movimiento','estado','lugar','usuario','presion')
+		fields = ('id','epc','hora','tipo','movimiento','estado','lugar','usuario','presion','antena')
 
 class SigninSerializer(serializers.Serializer):
 	username = serializers.CharField(required = True)

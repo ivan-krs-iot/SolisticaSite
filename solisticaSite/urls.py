@@ -50,4 +50,5 @@ urlpatterns = [
     path('API/reset-password', Reset_Pass.as_view()), 
     path('API/recover-password', Recover_Pass.as_view()), 
     path('API/perfil', Perfil.as_view()),
+    path('API/validaciones', ValidDetail.as_view())
 ]

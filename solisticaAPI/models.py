@@ -13,7 +13,7 @@ from datetime import datetime, timezone,timedelta
 
 class vehiculo(models.Model):
 	epc = models.CharField(max_length=50)
-	placa = models.CharField(max_length=10)
+	placa = models.CharField(max_length=50)
 	tipo = models.CharField(max_length=15)
 	layout = models.CharField(max_length=25)
 
@@ -22,7 +22,13 @@ class neumatico(models.Model):
 	idP = models.CharField(max_length=20)
 	pos = models.CharField(max_length=10)
 	trailer = models.CharField(max_length=50)
-	
+
+class validaciones(models.Model):
+	epc = models.CharField(max_length=50)
+	fecha =  models.DateTimeField(auto_now_add=True)
+	antena = models.CharField(max_length=50,default="Desconocido")
+	coordenadas = models.CharField(max_length=50,default="Desconocido")
+	equipo = models.CharField(max_length=20,default="Desconocido")
 
 class historial(models.Model):
 	epc = models.CharField(max_length=50)
@@ -30,9 +36,10 @@ class historial(models.Model):
 	tipo = models.CharField(max_length=20)
 	movimiento = models.CharField(max_length=20)
 	estado = models.CharField(max_length=15)
-	lugar = models.CharField(max_length=50,default="Desconocido")
+	lugar = models.CharField(max_length=30,default="Desconocido")
 	usuario = models.CharField(max_length=30,default="Desconocido")
 	presion = models.FloatField(default=0.0)
+	antena = models.CharField(max_length=50,default="Desconocido")
 
 class stripeCustomer(models.Model):
 	usuario = models.CharField(max_length=50)

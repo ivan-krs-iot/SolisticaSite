@@ -156,10 +156,14 @@ class VehiDetail(APIView):
 
 		serializer = VehiSerializer(data = request.data)
 		if serializer.is_valid():
-			if True:
-				serializer.save()
-				return Response({"msg":"Usuario guardado"}, status= status.HTTP_201_CREATED)
-			
+			if request.data['epc'] in vehiculo.objects.values_list('epc', flat=True):
+				return Response({'detail':'Error'}, status=status.HTTP_201_CREATED)
+			else:
+				if(request.data['epc'] in neumatico.objects.values_list('epc', flat=True)):
+					return Response({'detail':'Error'}, status=status.HTTP_201_CREATED)
+				else:
+					serializer.save()
+					return Response({'detail':'Exito'}, status=status.HTTP_201_CREATED)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 	def patch(self, request, epc):
@@ -189,8 +193,11 @@ class NeumDetail(APIView):
 	def post(self, request, format=None):
 		serializer = NeumSerializer(data = request.data)
 		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status= status.HTTP_201_CREATED)
+			if request.data['epc'] in neumatico.objects.values_list('epc', flat=True):
+				return Response({'detail': 'Error'}, status=status.HTTP_201_CREATED)
+			else:
+				serializer.save()
+				return Response({'detail': 'Exito'}, status= status.HTTP_201_CREATED)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 	def patch(self, request, epc):
@@ -334,6 +341,49 @@ class InfoDetail(APIView):
 
 		#serializer.data[0]={"etado":hola}	
 		return Response(serializer_data)
+
+class ValidDetail(APIView):
+	permission_classes = (IsAuthenticated,)
+	def get(self, request, epc):
+		#new_token = Token.objects.create(user=request.user)
+		objL=get_list_or_404(validaciones, epc__exact=epc)
+		serializer_data=[]
+		for obj in objL:	
+			serializer=ValidSerializer(obj)
+			serializer_data.append(serializer.data)
+
+		#serializer.data[0]={"etado":hola}	
+		return Response(serializer_data)
+
+	#def delete(self, request):
+	#	queryset=historial.objects.all()
+	#	queryset.delete()
+	#	return Response(status=status.HTTP_204_NO_CONTENT)
+
+	def delete(self, request, pk):
+		obj=get_object_or_404(validaciones, pk=pk)
+		obj.delete()
+		return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+	def post(self, request, format=None):
+		serializer = ValidSerializer(data = request.data)
+		if serializer.is_valid():
+			if request.data['epc'] in vehiculo.objects.values_list('epc', flat=True):
+				return Response({'detail': 'Error'}, status=status.HTTP_201_CREATED)
+			else:
+				serializer.save()
+				return Response({'detail': 'Exito'}, status= status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+	def patch(self, request, pk):
+		obj=get_object_or_404(validaciones, pk=pk)
+		serializer = ValidSerializer(obj,data = request.data, partial=True)
+
+		if serializer.is_valid():
+			serializer.save()
+
+		return Response(serializer.data)
 
 class HistDetail(APIView):
 	permission_classes = (IsAuthenticated,)
